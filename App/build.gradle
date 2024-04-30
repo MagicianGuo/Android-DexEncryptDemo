@@ -10,7 +10,15 @@ android {
     defaultConfig {
         applicationId "com.magicianguo.dexencrypdemo"
         minSdk 24
-        targetSdk 34
+        /*
+        targetSdk在30或以上在Android11以上设备无法安装，会出现以下报错：
+        Error code: '-124', message='-124: Failed parse during installPackageLI:
+        Targeting R+ (version 30 and above) requires the resources.arsc of installed APKs
+        to be stored uncompressed and aligned on a 4-byte boundary'
+        即使打包后对齐并签名也会如此，原因未知。
+         */
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk 29
         versionCode 1
         versionName "1.0"
 
