@@ -63,7 +63,7 @@ public class ProxyApp extends Application {
         try {
             loadDex(dexFiles, versionDir);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("加载Dex时异常！", e);
         }
     }
 
@@ -89,6 +89,10 @@ public class ProxyApp extends Application {
     }
 
     private void loadDex(List<File> dexFiles, File versionDir) throws Exception {
+        for (File dexFile : dexFiles) {
+            // 适配targetSdk34，dex必须设为只读。
+            dexFile.setReadOnly();
+        }
         Field pathListField = ReflectUtils.findField(getClassLoader(), "pathList");
         Object pathList = pathListField.get(getClassLoader());
         Field dexElementsField = ReflectUtils.findField(pathList, "dexElements");
