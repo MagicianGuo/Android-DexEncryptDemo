@@ -1,8 +1,7 @@
-package com.magicianguo.encryptionlib;
+package com.magicianguo.decryptionlib;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,11 +37,9 @@ public class FileUtils {
                 String name = zipEntry.getName();
 
                 File f = new File(destDir, name);
-                //创建目录
                 if (!f.getParentFile().exists()) {
                     f.getParentFile().mkdirs();
                 }
-                //写文件
                 FileOutputStream fos = new FileOutputStream(f);
                 InputStream is = zipFile.getInputStream(zipEntry);
                 byte[] buffer = new byte[8192];
@@ -63,7 +60,6 @@ public class FileUtils {
         destFile.delete();
         CheckedOutputStream cos = new CheckedOutputStream(new FileOutputStream(destFile), new CRC32());
         ZipOutputStream zos = new ZipOutputStream(cos);
-        //压缩
         compress(dir, zos, "");
         zos.flush();
         zos.close();

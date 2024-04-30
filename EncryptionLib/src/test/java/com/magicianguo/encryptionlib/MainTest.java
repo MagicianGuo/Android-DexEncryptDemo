@@ -1,5 +1,8 @@
 package com.magicianguo.encryptionlib;
 
+import com.magicianguo.decryptionlib.EncryptUtils;
+import com.magicianguo.decryptionlib.FileUtils;
+
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -52,7 +55,9 @@ public class MainTest {
         File jarFile = new File(unzipAarDir, "classes.jar");
         File dexFile = new File(unzipAarDir, "classes.dex");
         System.out.println("正在生成dex文件……");
-        Process process = Runtime.getRuntime().exec(CMD_DX + dexFile + " " + jarFile);
+        String cmd = CMD_DX + dexFile + " " + jarFile;
+        System.out.println(cmd);
+        Process process = Runtime.getRuntime().exec(cmd);
         consumeInputStream(process);
         process.waitFor();
         process.destroy();
@@ -99,9 +104,9 @@ public class MainTest {
         File unSignedApkFile = new File(PATH_WORKSPACE+"/App-unsigned.apk");
         File alignedApkFile = new File(PATH_WORKSPACE+"/App-unsigned-aligned.apk");
         alignedApkFile.delete();
-        Thread.sleep(1000);
-        Process process = Runtime.getRuntime().exec(CMD_ZIPALIGN + unSignedApkFile.getAbsolutePath()
-                + " " + alignedApkFile.getAbsolutePath());
+        String cmd = CMD_ZIPALIGN + unSignedApkFile.getAbsolutePath() + " " + alignedApkFile.getAbsolutePath();
+        System.out.println(cmd);
+        Process process = Runtime.getRuntime().exec(cmd);
         consumeInputStream(process);
         process.waitFor();
         process.destroy();
@@ -115,10 +120,11 @@ public class MainTest {
         File signedApkFile = new File(PATH_WORKSPACE + "/App-signed-aligned.apk");
         File jksFile = new File(PATH_KEYSTORE);
         File alignedApkFile = new File(PATH_WORKSPACE+"/App-unsigned-aligned.apk");
-
-        Process process = Runtime.getRuntime().exec(CMD_APKSIGNER + jksFile.getAbsolutePath()
+        String cmd = CMD_APKSIGNER + jksFile.getAbsolutePath()
                 + " --ks-key-alias testks --ks-pass pass:testks --key-pass pass:testks --out "
-                + signedApkFile.getAbsolutePath() + " " + alignedApkFile.getAbsolutePath());
+                + signedApkFile.getAbsolutePath() + " " + alignedApkFile.getAbsolutePath();
+        System.out.println(cmd);
+        Process process = Runtime.getRuntime().exec(cmd);
         consumeInputStream(process);
         process.waitFor();
         process.destroy();

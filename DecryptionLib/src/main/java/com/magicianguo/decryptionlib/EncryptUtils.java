@@ -1,4 +1,4 @@
-package com.magicianguo.encryptionlib;
+package com.magicianguo.decryptionlib;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
