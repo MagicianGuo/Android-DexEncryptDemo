@@ -60,6 +60,8 @@ public class FileUtils {
         destFile.delete();
         CheckedOutputStream cos = new CheckedOutputStream(new FileOutputStream(destFile), new CRC32());
         ZipOutputStream zos = new ZipOutputStream(cos);
+        // 不能对文件压缩，否则Android11以上设备无法安装！
+        zos.setMethod(ZipOutputStream.STORED);
         compress(dir, zos, "");
         zos.flush();
         zos.close();
@@ -89,6 +91,11 @@ public class FileUtils {
             sb.append("/");
         }
         ZipEntry entry = new ZipEntry(sb.substring(1));
+        byte[] fileBytes = getBytes(file);
+        entry.setSize(fileBytes.length);
+        CRC32 crc32 = new CRC32();
+        crc32.update(fileBytes);
+        entry.setCrc(crc32.getValue());
         zos.putNextEntry(entry);
         FileInputStream fis = new FileInputStream(file);
         int len;
