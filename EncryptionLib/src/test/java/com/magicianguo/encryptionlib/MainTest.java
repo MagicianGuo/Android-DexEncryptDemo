@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -23,7 +24,7 @@ public class MainTest {
     /**
      * 需要自己配置build-tools路径。建议使用版本30或以下，30以上没有dx.bat文件
      */
-    private static final String PATH_BUILD_TOOLS = "E:\\Android\\SDK\\build-tools\\30.0.3";
+    private static final String PATH_BUILD_TOOLS = getBuildToolsPath();
     private static final String CMD_DX = PATH_BUILD_TOOLS + "\\dx.bat --dex --output ";
     private static final String CMD_ZIPALIGN = PATH_BUILD_TOOLS + "\\zipalign.exe -v -p  4 ";
     private static final String CMD_APKSIGNER = PATH_BUILD_TOOLS + "\\apksigner.bat sign --ks ";
@@ -156,5 +157,36 @@ public class MainTest {
                 }
             }
         }.start();
+    }
+
+    private static String getBuildToolsPath() {
+        // build-tools 版本号
+        String buildToolsVersion = "30.0.3";
+        try {
+            File localPropertiesFile = new File("../local.properties");
+            if (!localPropertiesFile.exists()) {
+                throw new RuntimeException("未找到local.properties文件！请重新打开项目！");
+            }
+            BufferedReader br = new BufferedReader(new FileReader(localPropertiesFile));
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("sdk.dir=")) {
+                    String sdkPath = line.replace("sdk.dir=", "")
+                            .replace("\\\\", "\\")
+                            .replace("\\:", ":");
+                    String buildToolsPath = sdkPath + "\\build-tools\\" + buildToolsVersion;
+                    System.out.println("路径："+buildToolsPath);
+                    if (new File(buildToolsPath).exists()) {
+                        return buildToolsPath;
+                    } else {
+                        throw new RuntimeException(buildToolsVersion + " 版本的build-tools不存在！请改成其他版本！" +
+                                "（建议使用版本30或以下，30以上没有dx.bat文件）");
+                    }
+                }
+            }
+            throw new RuntimeException("local.properties文件中缺少sdk.dir配置！");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
